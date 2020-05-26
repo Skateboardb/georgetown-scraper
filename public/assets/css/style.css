@@ -33,3 +33,7 @@
 .article-container {
 	margin: 10px 0 10px 0;
 }
+
+.hidden{
+	display: none;
+}

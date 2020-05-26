@@ -5,11 +5,11 @@
 
     <div class="flex container-fluid">
         <div class="text">
-            <h1>
+            {{!-- <h1>
                 Check out what's happening on <span id="highlight">Buzzfeed</span>;
                 <br />
 
-            </h1>
+            </h1> --}}
         </div>
 
     </div>
@@ -17,8 +17,28 @@
 {{!-- {{> article}} --}}
 <div class="section">
     <div class="container">
-        <h2 id="results">Article Results</h2>
+        <form  id="page-link">
+            <label for="link">Add Link to Scrape:</label>
+            <input type="text" name="link" >
+            <br>
+            <label for="category"> Category: </label>
+            <input type="text" name="category" >
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+
+
+        <h2 id="results">Scrape Results</h2>
         <div id="scraped-articles">
+            <table id="result-table" class="hidden">
+                <tr>
+                    <th>Number</th>
+                    <th>Title</th>
+                    <th>Edition</th>
+                    <th>URL</th>
+
+                </tr>
+            </table>
 
 
         </div>

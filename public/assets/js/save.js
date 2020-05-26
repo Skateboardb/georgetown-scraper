@@ -1,101 +1,57 @@
 $(document).ready(() => {
-	$.getJSON('/articles', data => {
+	$.getJSON('/titles', data => {
 		for (let i = 0; i < data.length; i++) {
 			let model = data[i];
 
-			if (model.saved) {
-				$('#saved-articles').prepend(
-					'<div class="row article-container ">' +
-						'<div class="col-3">' +
-						'   <img src=" ' +
-						model.img +
-						' " style="width:100%">' +
-						' </div>' +
-						'<div class="col-8">' +
-						'   <a href=" ' +
-						model.link +
-						' "><h3>' +
-						model.title +
-						'   </h3></a>' +
-						'   <p> ' +
-						model.summary +
-						'   </p>' +
-						'</div>' +
-						'<div class="col-1">' +
-						'<div class="row">' +
-						'   <button class="remove-article button col-5" data-id="' +
-						model._id +
-						' "><i class="fa fa-trash"></i></button>' +
-						'  <button class="comment-button col-5" data-id="' +
-						model._id +
-						' "><i class="fa fa-comments"></i></button> </div></div>' +
-						'</div>'
-				);
-			}
+			
 		}
 	});
 
-	$(document).on('click', '.remove-article', function() {
-		$(this)
-			.children('i.fa-bookmark')
-			.removeClass('fa-bookmark')
-			.addClass('fa-check-circle');
+	$('#category-search').on('submit', function () {
+		event.preventDefault()
 
-		const articleID = $(this).attr('data-id');
-		console.log(articleID);
+		let data = $('form').serializeArray().reduce(function(obj, item) {
+			obj[item.name] = item.value;
+			return obj;
+		}, {});
 
-		$.ajax({
-			method: 'POST',
-			url: '/unsave/' + articleID,
-			data: {
-				saved: false
-			}
-		}).done(data => {
-			console.log('data: ', data);
-			window.location.reload();
-		});
-	});
-
-	$(document).on('click', '.comment-button', function() {
-		$('#comment-modal').modal();
-
-		const articleID = $(this).attr('data-id');
-		console.log(articleID);
+		console.log(data);
 
 		$.ajax({
-			method: 'GET',
-			url: '/articles/' + articleID
-		}).done(data => {
-			console.log('data: ', data);
-			$('#modal-title').prepend('Article Comments for: ' + data.title);
-
-			for (let i = 0; i < data.comments.length; i++) {
-				$('#comment-block').append(
-					'<div class="comment-div">' +
-						'<p class="comment-text">' +
-						data.comments[i].body +
-						'</p></div>'
-				);
+			type: 'GET',
+			url: '/titles',
+			data: data,
+			dataType: 'json',
+			success: function(data){
+				console.log("Request Sent: " + data);
+				
 			}
-			$('#save-comment').attr('data-id', data._id);
-		});
-	});
+		}).then(function (response) {
+			// console.log(response);
+			for (let i = 0; i < response.length; i++){
+				let model = response[i]
 
-	$(document).on('click', '#save-comment', function() {
-		const articleID = $(this).attr('data-id');
+				$('#result-table').append(
+					`
+					<tr>
+						<td>${i+1}</td>
+						<td>${model.title}</td>
+						<td>${model.edition}</td>
+						<td>${model.link}</td>
+					<tr>
+					`
+				)
 
-		$.ajax({
-			method: 'POST',
-			url: '/comment/' + articleID,
-			data: {
-				body: $('#new-comment').val()
 			}
-		}).done(function(data) {
-			console.log('data: ', data);
-		});
+			
+		})
+		
+	})
 
-		$('#new-comment').val('');
+	
 
-		$('#comment-modal').modal();
-	});
+		
+
+
+	
 });

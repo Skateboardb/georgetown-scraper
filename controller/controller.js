@@ -7,6 +7,7 @@ const cheerio = require('cheerio');
 
 const Comment = require('../models/comment.js');
 const Article = require('../models/article.js');
+const Title = require('../models/Title')
 
 // ============================= HOME PAGE =============================
 
@@ -18,47 +19,84 @@ router.get('/', (req, res) => {
 
 router.get('/scrape', (req, res) => {
 	// First, we grab the body of the html with request
-	axios.get('https://www.buzzfeednews.com').then(function(response) {
+	console.log(req.query);
+
+	let link = req.query.link
+	let category = req.query.category
+
+	axios.get(link).then(function(response) {
 		// Then, we load that into cheerio and save it to $ for a shorthand selector
 		var $ = cheerio.load(response.data);
+		console.log($);
+		
 
 		// Now, we grab every h2 within an article tag, and do the following:
-		$('article.newsblock-story-card').each(function(i, element) {
+		$('div.views-field-phpcode').each(function(i, element) {
 			// Save an empty result object
 			const result = {};
 
 			// Add the text and href of every link, and save them as properties of the result object
 
 			result.title = $(element)
-				.children('span.newsblock-story-card__info')
-				.children('h2')
+				.children('span.field-content')
 				.children('a')
 				.text()
-				.split(`\n`)[0];
+
+			// result.subtitle = $(element)
+			// 	.siblings('div.views-field-phpcode-1')
+			// 	.children('span')
+			// 	.text()
+
+			// result.author = $(element)
+			// .siblings('div.views-field-field-by-line-1-value')
+			// .children('span')
+			// .text()
+
+			result.edition = $(element)
+			.siblings('div.views-field-field-edition-value')
+			.children('span')
+			.text()
 
 			result.link = $(element)
-				.children('span.newsblock-story-card__info')
-				.children('h2')
-				.children('a')
-				.attr('href');
+			.children('span.field-content')
+			.children('a')
+			.attr('href')
 
-			result.summary = $(element)
-				.children('span.newsblock-story-card__info')
-				.children('p')
-				.text();
+			result.category = category
 
-			result.img = $(element)
-				.children('span.newsblock-story-card__image-link')
-				.children('span')
-				.children('img')
-				.attr('src');
+			
 
-			console.log(result);
-			// Create a new Article using the `result` object built from scraping
-			Article.create(result)
-				.then(function(dbArticle) {
+
+			// result.title = $(element)
+			// 	.children('span.newsblock-story-card__info')
+			// 	.children('h2')
+			// 	.children('a')
+			// 	.text()
+			// 	.split(`\n`)[0];
+
+			// result.link = $(element)
+			// 	.children('span.newsblock-story-card__info')
+			// 	.children('h2')
+			// 	.children('a')
+			// 	.attr('href');
+
+			// result.summary = $(element)
+			// 	.children('span.newsblock-story-card__info')
+			// 	.children('p')
+			// 	.text();
+
+			// result.img = $(element)
+			// 	.children('span.newsblock-story-card__image-link')
+			// 	.children('span')
+			// 	.children('img')
+			// 	.attr('src');
+
+			// console.log(result);
+			// Create a new Title using the `result` object built from scraping
+			Title.create(result)
+				.then(function(dbTitle) {
 					// View the added result in the console
-					console.log(dbArticle);
+					console.log(dbTitle);
 				})
 				.catch(function(err) {
 					// If an error occurred, send it to the client
@@ -71,8 +109,8 @@ router.get('/scrape', (req, res) => {
 	});
 });
 
-router.get('/articles', function(req, res) {
-	Article.find({}).exec(function(err, doc) {
+router.get('/titles', function(req, res) {
+	Title.find({category: req.query.category}).exec(function(err, doc) {
 		if (err) {
 			console.log(error);
 		} else {
@@ -82,6 +120,20 @@ router.get('/articles', function(req, res) {
 });
 
 // ============================= SAVED ARTICLES =============================
+
+router.get('/titles/:category', (req, res) => {
+	Title.find({ category: req.query.category })
+		
+		.exec(function(error, doc) {
+			if (error) {
+				console.log(error);
+			} else {
+				res.json(doc);
+			}
+		});
+});
+
+
 
 router.get('/saved', (req, res) => {
 	res.render('saved');

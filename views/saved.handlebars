@@ -6,7 +6,7 @@
     <div class="flex container-fluid">
         <div class="text">
             <h1>
-                The articles you want to keep
+                Find what you need
                 <br />
 
             </h1>
@@ -17,8 +17,24 @@
 {{!-- {{> article}} --}}
 <div class="section">
     <div class="container">
-        <h2 id="results">Saved Articles</h2>
+        <h2 id="results">Saved Titles</h2>
+
+        <form id="category-search">
+            <label for="category">Search Category: </label>
+            <input type="text" name="category" id="cat">
+
+            <button type="submit">Submit</button>
+        </form>
         <div id="saved-articles">
+            <table id="result-table" class="hidden">
+                <tr>
+                    <th>Number</th>
+                    <th>Title</th>
+                    <th>Edition</th>
+                    <th>URL</th>
+
+                </tr>
+            </table>
 
 
         </div>
@@ -27,36 +43,6 @@
 
 
 
-<div id="comment-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title"></h3>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                {{!-- <form class="col-12"> --}}
-                <div id="comment-block">
-                    <p>Have some thoughts? Share them!</p>
-                </div>
 
-
-
-                <div>
-                    <textarea id="new-comment"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-secondary" id="save-comment"><i class="fas fa-sign-in-alt"></i>
-                    Submit</button>
-
-                {{!-- </form> --}}
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script src="assets/js/save.js"></script>
