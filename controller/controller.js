@@ -111,10 +111,14 @@ router.get('/scrape', (req, res) => {
 
 router.get('/titles', function(req, res) {
 	Title.find({category: req.query.category}).exec(function(err, doc) {
+		console.log(this.category);
+		
 		if (err) {
 			console.log(error);
 		} else {
 			res.json(doc);
+			console.log(doc);
+			
 		}
 	});
 });

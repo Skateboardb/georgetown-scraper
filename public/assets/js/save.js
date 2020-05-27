@@ -16,6 +16,9 @@ $(document).ready(() => {
 		}, {});
 
 		console.log(data);
+		$('#result-table').removeClass('hidden')
+		console.log('hidden class removed');
+		
 
 		$.ajax({
 			type: 'GET',
